@@ -20,7 +20,13 @@
 //   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <libusb-1.0/libusb.h>
-#include <asm/errno.h>
+
+#ifdef _WIN32
+    #include <errno.h>
+#else
+    #include <asm/errno.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
