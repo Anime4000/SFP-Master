@@ -88,15 +88,20 @@ struct libusb_device_handle *ch341configure(uint16_t vid, uint16_t pid) {
 
     printf("Opened device [%04x:%04x]\n", USB_LOCK_VENDOR, USB_LOCK_PRODUCT);
 
-
+#ifdef _WIN32
+    // Windows does not need to detach kernel driver, just print a message
+    printf("Skipping kernel driver detachment on Windows\n");
+#else
     if(libusb_kernel_driver_active(devHandle, DEFAULT_INTERFACE)) {
         ret = libusb_detach_kernel_driver(devHandle, DEFAULT_INTERFACE);
         if(ret) {
             printf("Failed to detach kernel driver: '%s'\n", strerror(-ret));
             return NULL;
-        } else
+        } else {
             printf("Detached kernel driver\n");
+        }
     }
+#endif
 
     ret = libusb_get_configuration(devHandle, &currentConfig);
     if(ret) {
